@@ -9,6 +9,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const Choices = require("inquirer/lib/objects/choices");
 
 const projectTeamArray[];
 
@@ -30,69 +31,45 @@ function managerPrompt() {
         message: "What is your project manager's email?",
       },
     ]).then(function(answers) {
-      let manager = new Manager(answers.name, answers.id, answers.email)
-      team.push(manager);
+
+      let manager = new Manager(answers.name, answers.id, answers.email);
+
+      projectTeamArray.push(manager);
   
       addEmployee()
+
     })
   };
 
 function addEmployee() {
     return inquirer.prompt([
       {
-        type: "input",
-        name: "title",
-        message: "What is the title of your project?"
+        type: "confirm",
+        name: "add",
+        message: "Would you like to add an employee?"
       },
       {
-        type: "input",
-        name: "description",
-        message: "Please input a brief description of your project:"
+        type: "rawlist",
+        name: "whichType",
+        when: (answers) => answers.add === true,
+        message: "Please select which type of employee:"
+        choices: ["Engineer", "Intern", "Another Manager"],
       },
       {
-        type: "input",
-        name: "installation",
-        message: "Please input instructions on how to install your program:"
-      },
-      {
-        type: "input",
-        name: "usage",
-        message: "Please input instructions on how to use your program:"
-      },
-      {
-        type: "input",
-        name: "contribution",
-        message: "Please list all contributors and contributions to your program:"
-      },
-      {
-        type: "input",
-        name: "test",
-        message: "Please input instructions on how to test your program:"
-      },
-      {
-        type: "list",
-        name: "license",
-        message: "Please choose a license for your project:",
-        choices: ["Academic Free License v3.0", "Apache 2.0", "Creative Commons", "wtfpl", "GPL", "MIT", "NONE", "OTHER"]
-      },
-      {
-        type: "input",
-        name: "license",
-        when: (answers) => answers.license === "OTHER",
-        message: "Please input the name of the license:"
-      },
-      {
-        type: "input",
-        name: "username",
-        message: "What is your GitHub username?"
-      },
-      {
-        type: "input",
-        name: "email",
-        message: "What is your email address?"
+        type: "rawlist",
+        name: "whatNow",
+        when: (answers) => answers.add === false,
+        message: "What would you like to do?"
+        choices: ["Go Back", "Display Info"],
       },
     ]);
-  }
+  }.then(answers => {
+      if (answers.whichType === "Engineer") { engineerPrompt() };
+      if (answers.whichType === "Intern") { internPrompt() };
+      if (answers.whichType === "Another Manager") { managerPrompt() };
+      if (answers.whatNow === "Go Back") { addEmployee() };
+      if (answers.whatNow === "Display Info") { generateHTML(outputPath, render(projectTeamArray)) };   
+  })
 
 
 
