@@ -9,11 +9,11 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-const Choices = require("inquirer/lib/objects/choices");
+const prompts = require("inquirer/lib/prompts"); //Not sure how precisely the starter code was indicating to go about this with the "Choices" constructor, but this ought to work
 
 const projectTeamArray[];
 
-function managerPrompt() {
+function addEmployee() {
     return inquirer.prompt([
       {
         type: "input",
@@ -41,7 +41,7 @@ function managerPrompt() {
     })
   };
 
-function addEmployee() {
+function metaPrompt() {
     return inquirer.prompt([
       {
         type: "confirm",
