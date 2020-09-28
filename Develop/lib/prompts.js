@@ -2,17 +2,17 @@ const allEmployeesPrompts = [
     {
       type: "input",
       name: "name",
-      message: "What is the name of your project's manager?"
+      message: "What is the name of your employee?"
     },
     {
       type: "input",
       name: "id",
-      message: "What is your project manager's ID?"
+      message: "What is your employee's ID?"
     },
     {
       type: "input",
       name: "email",
-      message: "What is your project manager's email?",
+      message: "What is your employee's email?",
     },
   ];
 
