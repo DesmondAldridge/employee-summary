@@ -1,4 +1,7 @@
-const allEmployeesPrompt = [
+const inquirer = require("inquirer");
+
+function allEmployeesPrompt() {
+  return inquirer.prompt([
     {
       type: "input",
       name: "name",
@@ -14,24 +17,30 @@ const allEmployeesPrompt = [
       name: "email",
       message: "What is your employee's email?",
     },
-  ];
+  ])};
 
-const engineerPrompt = [{
-  type: "input",
-  message: "What is your engineer's GitHub username?",
-  name: "github",
-}];
+function engineerPrompt() {
+  return inquirer.prompt([
+   {
+      type: "input",
+      message: "What is your engineer's GitHub username?",
+      name: "github",
+   }
+])};
 
-const internPrompt = [{
+function internPrompt() {
+  return inquirer.prompt([
+  {
   type: "input",
   message: "Which school is your intern currently attending?",
   name: "school",
-}];
+  }
+])};
 
 // const managerPrompt = [{
 //   type: "input",
 //   message: "What is your manager's office number?"
 // }];
 
-module.exports = { allEmployeesPrompt, engineerPrompt, internPrompt};
+module.exports = {allEmployeesPrompt, engineerPrompt, internPrompt};
 
