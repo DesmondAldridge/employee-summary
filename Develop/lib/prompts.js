@@ -1,4 +1,4 @@
-const allEmployeesPrompts = [
+const allEmployeesPrompt = [
     {
       type: "input",
       name: "name",
@@ -16,9 +16,22 @@ const allEmployeesPrompts = [
     },
   ];
 
-const engineerPrompts = [];
+const engineerPrompt = [{
+  type: "input",
+  message: "What is your engineer's GitHub username?",
+  name: "github",
+}];
 
-const internPrompts = [];
+const internPrompt = [{
+  type: "input",
+  message: "Which school is your intern currently attending?",
+  name: "school",
+}];
 
-const managerPrompts = [];
+// const managerPrompt = [{
+//   type: "input",
+//   message: "What is your manager's office number?"
+// }];
+
+module.exports = { allEmployeesPrompt, engineerPrompt, internPrompt};
 

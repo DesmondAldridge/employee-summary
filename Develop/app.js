@@ -13,7 +13,7 @@ const prompts = require("inquirer/lib/prompts"); //Not sure how precisely the st
 
 const projectTeamArray[];
 
-function addEmployee() {
+function beginningPrompt() {
     return inquirer.prompt([
       {
         type: "input",
@@ -23,25 +23,32 @@ function addEmployee() {
       {
         type: "input",
         name: "id",
-        message: "What is your project manager's ID?"
+        message: "What is your project manager's employee ID?"
       },
       {
         type: "input",
         name: "email",
         message: "What is your project manager's email?",
       },
+      {
+        type: "input",
+        name: "officeNumber",
+        message: "What is the office number of your project?"
+      }
     ]).then(function(answers) {
 
-      let manager = new Manager(answers.name, answers.id, answers.email);
+      let role = "Project Manager";
 
-      projectTeamArray.push(manager);
+      let projectManager = (answers.name, answers.id, answers.email, answers.officeNumber, role);
+
+      projectTeamArray.push(projectManager);
   
-      addEmployee()
+      addEmployee();
 
     })
   };
 
-function metaPrompt() {
+function addEmployee() {
     return inquirer.prompt([
       {
         type: "confirm",
@@ -51,20 +58,31 @@ function metaPrompt() {
       {
         type: "rawlist",
         name: "whichType",
-        when: (answers) => answers.add === true,
+        when: (answer) => answer.add === true,
         message: "Please select which type of employee:"
         choices: ["Engineer", "Intern", "Another Manager"],
       },
       {
         type: "rawlist",
         name: "whatNow",
-        when: (answers) => answers.add === false,
+        when: (answer) => answer.add === false,
         message: "What would you like to do?"
         choices: ["Go Back", "Display Info"],
       },
     ]);
-  }.then(answers => {
-      if (answers.whichType === "Engineer") { engineerPrompt() };
+  }.then(answer => {
+      switch (answer) {
+        case answer.whichType === "Engineer";
+        inquirer.prompt(prompts.allEmployeesPrompt).then((answers) => {
+          inquirer.prompt(prompts.engineerPrompt).then((engineeringAnswers) => {
+            const engineer = new Engineer(answers.name, answers.id, answers.email, engineeringAnswers.github);
+            projectTeamArray.push(engineer);
+
+            addEmployee();
+          });
+  
+        
+
       if (answers.whichType === "Intern") { internPrompt() };
       if (answers.whichType === "Another Manager") { managerPrompt() };
       if (answers.whatNow === "Go Back") { addEmployee() };
