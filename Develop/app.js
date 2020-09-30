@@ -9,87 +9,122 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-const prompts = require("inquirer/lib/prompts"); //Not sure how precisely the starter code was indicating to go about this with the "Choices" constructor, but this ought to work
+// const prompts = require("inquirer/lib/prompts"); //Not sure how precisely the starter code was indicating to go about this with the "Choices" constructor, but this ought to work
+const { allEmployeesPrompt, engineerPrompt, internPrompt } = require("./lib/prompts");
 
-const projectTeamArray[];
+const projectTeamArray = [];
 
 function beginningPrompt() {
-    return inquirer.prompt([
-      {
-        type: "input",
-        name: "name",
-        message: "What is the name of your project's manager?"
-      },
-      {
-        type: "input",
-        name: "id",
-        message: "What is your project manager's employee ID?"
-      },
-      {
-        type: "input",
-        name: "email",
-        message: "What is your project manager's email?",
-      },
-      {
-        type: "input",
-        name: "officeNumber",
-        message: "What is the office number of your project?"
-      }
-    ]).then(function(answers) {
+  return inquirer.prompt([
+    {
+    type: "input",
+    name: "name",
+    message: "What is the name of your project's manager?"
+    },
+    {
+    type: "input",
+    name: "id",
+    message: "What is your project manager's employee ID?"
+    },
+    {
+    type: "input",
+    name: "email",
+    message: "What is your project manager's email?",
+    },
+    {
+    type: "input",
+    name: "officeNumber",
+    message: "What is the office number of your project?"
+    }
+  ]).then(function(answers) {
 
-      let role = "Project Manager";
+  let role = "Project Manager";
 
-      let projectManager = (answers.name, answers.id, answers.email, answers.officeNumber, role);
+  let projectManager = (answers.name, answers.id, answers.email, answers.officeNumber, role);
 
-      projectTeamArray.push(projectManager);
-  
-      addEmployee();
+  projectTeamArray.push(projectManager);
 
-    })
-  };
+  addEmployee();
+
+  });
+
+};
 
 function addEmployee() {
-    return inquirer.prompt([
-      {
-        type: "confirm",
-        name: "add",
-        message: "Would you like to add an employee?"
-      },
-      {
-        type: "rawlist",
-        name: "whichType",
-        when: (answer) => answer.add === true,
-        message: "Please select which type of employee:"
-        choices: ["Engineer", "Intern", "Another Manager"],
-      },
-      {
-        type: "rawlist",
-        name: "whatNow",
-        when: (answer) => answer.add === false,
-        message: "What would you like to do?"
-        choices: ["Go Back", "Display Info"],
-      },
-    ]);
-  }.then(answer => {
+  return inquirer.prompt([
+    {
+    type: "confirm",
+    name: "add",
+    message: "Would you like to add an employee?"
+    },
+    {
+    type: "list",
+    name: "whichType",
+    when: (answer) => answer.add === true,
+    message: "Please select which type of employee:",
+    choices: ["Engineer", "Intern", "Another Manager"],
+    },
+    {
+    type: "list",
+    name: "whatNow",
+    when: (answer) => answer.add === false,
+    message: "What would you like to do?",
+    choices: ["Go Back", "Display Info"],
+    },
+    ]).then(answer => {
       switch (answer) {
-        case answer.whichType === "Engineer";
-        inquirer.prompt(prompts.allEmployeesPrompt).then((answers) => {
-          inquirer.prompt(prompts.engineerPrompt).then((engineeringAnswers) => {
-            const engineer = new Engineer(answers.name, answers.id, answers.email, engineeringAnswers.github);
-            projectTeamArray.push(engineer);
 
-            addEmployee();
+        case answer.whichType === "Engineer":
+          allEmployeesPrompt().then((empAnswers) => {
+          
+            engineerPrompt().then((engAnswers) => {
+
+              const engineer = new Engineer(empAnswers.name, empAnswers.id, empAnswers.email, engAnswers.github);
+              projectTeamArray.push(engineer);
+              addEmployee();
+
+            });
           });
-  
-        
+        break;
+        case answer.whichType === "Intern":
+          allEmployeesPrompt().then((empAnswers) => {
+      
+            internPrompt().then((intAnswers) => {
 
-      if (answers.whichType === "Intern") { internPrompt() };
-      if (answers.whichType === "Another Manager") { managerPrompt() };
-      if (answers.whatNow === "Go Back") { addEmployee() };
-      if (answers.whatNow === "Display Info") { generateHTML(outputPath, render(projectTeamArray)) };   
-  })
+              const intern = new Intern(empAnswers.name, empAnswers.id, empAnswers.email, intAnswers.school);
+              projectTeamArray.push(intern);
+              addEmployee();
 
+            });
+          });
+        break;
+        case answer.whichType === "Another Manager":
+          allEmployeesPrompt().then((empAnswers) => {
 
+            const manager = new Manager(empAnswers.name, empAnswers.id, empAnswers.email);
+            projectTeamArray.push(manager);
+            addEmployee();
+
+        });
+
+      };
+
+    if (answers.whatNow === "Go Back") { addEmployee() };
+    if (answers.whatNow === "Display Info") { generateHTML(outputPath, render(projectTeamArray)) };
+
+  });
+
+};
+
+function generateHTML(fileName, info) {
+  fs.writeFile(fileName, info, "utf8", function(err) {
+    if (err) {
+      throw err;
+    }
+  });
+};
+
+beginningPrompt();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
